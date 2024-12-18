@@ -1,12 +1,30 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import beersJSON from "./../assets/beers.json";
+import {Link} from 'react-router-dom'
 
 
 function BeerDetailsPage() {
   // Mock initial state, to be replaced by data from the Beers API. Store the beer info retrieved from the Beers API in this state variable.
-  const [beer, setBeer] = useState(beersJSON[0]);
+  const {beerId} = useParams();
 
+  const [beer, setBeer] = useState(beersJSON[0]);
+  useEffect(() => {
+    const fetchBeer = async() => {
+      try {
+      const response = await fetch(`https://ih-beers-api2.herokuapp.com/beers/${beerId}`)
+      
+      if (response.ok) {
+        const beerData = await response.json()
+        console.log(beerData)
+        setBeer(beerData)
+  }
+  } catch (error) {
+  console.log(error)
+  }
+}
+fetchBeer()
+  }, [])
   // React Router hook for navigation. We use it for the back button. You can leave this as it is.
   const navigate = useNavigate();
 
@@ -22,7 +40,8 @@ function BeerDetailsPage() {
 
   // Structure and the content of the page showing the beer details. You can leave this as it is:
   return (
-    <div className="d-inline-flex flex-column justify-content-center align-items-center w-100 p-4">
+    <div className="d-inline-flex flex-column justify-content-center align-items-center w-100 p-4" key={beer.id} >
+     <Link to={`/beers/${beer.id}`}>
       {beer && (
         <>
           <img
@@ -47,6 +66,7 @@ function BeerDetailsPage() {
           </button>
         </>
       )}
+      </Link>
     </div>
   );
 }

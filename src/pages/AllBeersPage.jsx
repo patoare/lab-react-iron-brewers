@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Search from "../components/Search";
 import beersJSON from "./../assets/beers.json";
 
@@ -7,7 +7,25 @@ import beersJSON from "./../assets/beers.json";
 
 function AllBeersPage() {
   // Mock initial state, to be replaced by data from the API. Once you retrieve the list of beers from the Beers API store it in this state variable.
-  const [beers, setBeers] = useState(beersJSON);
+  const [beers, setBeers] = useState([]);
+const fetchBeers = async() => {
+try {
+  const response = await fetch ('https://ih-beers-api2.herokuapp.com/beers')
+  if (response.ok) {
+    const beersData = await response.json()
+    console.log(beersData)
+    setBeers(beersData)
+  }
+} catch (error) {
+  console.log(error)
+}
+}
+
+useEffect (() => {
+  console.log('using useEffect')
+fetchBeers()
+}, [])
+
 
 
 

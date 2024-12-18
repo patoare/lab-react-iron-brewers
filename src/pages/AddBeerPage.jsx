@@ -21,6 +21,39 @@ function AddBeerPage() {
   const handleAttenuationLevel = (e) => setAttenuationLevel(e.target.value);
   const handleContributedBy = (e) => setContributedBy(e.target.value);
 
+  const newBeer = {
+    name,
+    tagline,
+    description,
+    image_url: imageUrl, 
+    first_brewed: firstBrewed, 
+    brewers_tips: brewersTips,
+    attenuation_level: attenuationLevel,
+    contributed_by: contributedBy,
+  }
+
+  const handleSubmit = async event => {
+    event.preventDefault()
+
+try {
+const response = await fetch ('https://ih-beers-api2.herokuapp.com/beers/new', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(newBeer),
+});
+
+if(response.ok) {
+  const data = await response.json()
+  console.log("Beer added:", data)
+}
+} catch(error) {
+  console.log(error)
+}
+  }
+
+
 
 
   // TASK:
@@ -34,7 +67,7 @@ function AddBeerPage() {
   return (
     <>
       <div className="d-inline-flex flex-column w-100 p-4">
-        <form>
+        <form onSubmit={handleSubmit}>
           <label>Name</label>
           <input
             className="form-control mb-4"
@@ -122,7 +155,7 @@ function AddBeerPage() {
             value={contributedBy}
             onChange={handleContributedBy}
           />
-          <button className="btn btn-primary btn-round">Add Beer</button>
+          <button type="submit" className="btn btn-primary btn-round">Add Beer</button>
         </form>
       </div>
     </>
